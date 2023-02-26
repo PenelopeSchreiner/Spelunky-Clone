@@ -1,0 +1,194 @@
+[gd_scene load_steps=11 format=3 uid="uid://b0lka6j85jax1"]
+
+[ext_resource type="Texture2D" uid="uid://jbjwpm2urkm8" path="res://template builder/template tiles.png" id="1_5tp58"]
+[ext_resource type="Script" path="res://template builder/template_builder.gd" id="1_edn7h"]
+[ext_resource type="Script" path="res://template builder/SaveLoad.gd" id="3_ygli3"]
+[ext_resource type="PackedScene" uid="uid://du0g1ewfj5m5u" path="res://tile_button.tscn" id="4_y8eir"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_tefpn"]
+texture = ExtResource("1_5tp58")
+0:0/0 = 0
+1:0/0 = 0
+0:1/0 = 0
+0:2/0 = 0
+0:3/0 = 0
+0:4/0 = 0
+7:7/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_bwhfq"]
+sources/0 = SubResource("TileSetAtlasSource_tefpn")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rg23l"]
+atlas = ExtResource("1_5tp58")
+region = Rect2(0, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1j1tn"]
+atlas = ExtResource("1_5tp58")
+region = Rect2(0, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gmt88"]
+atlas = ExtResource("1_5tp58")
+region = Rect2(0, 48, 16, 16)
+
+[sub_resource type="Theme" id="Theme_wgqjx"]
+Label/colors/font_color = Color(0.823529, 0.819608, 0.0196078, 1)
+
+[node name="Template Builder" type="Node2D"]
+script = ExtResource("1_edn7h")
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = SubResource("TileSet_bwhfq")
+format = 2
+layer_1/name = "selected"
+layer_1/enabled = true
+layer_1/modulate = Color(1, 1, 1, 1)
+layer_1/y_sort_enabled = false
+layer_1/y_sort_origin = 0
+layer_1/z_index = 0
+layer_1/tile_data = PackedInt32Array()
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(81, 74)
+zoom = Vector2(3, 3)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Tile Selector" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 9
+anchor_bottom = 1.0
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Tile Selector"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 234.0
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Tile Selector/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/Tile Selector/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Clear Button" type="Button" parent="CanvasLayer/Tile Selector/PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+text = "Clear"
+
+[node name="Tile Pos Label" type="Label" parent="CanvasLayer"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -65.0
+offset_right = 65.0
+offset_bottom = 26.0
+grow_horizontal = 2
+text = "Tile Pos: "
+
+[node name="SaveLoad" type="PanelContainer" parent="CanvasLayer"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -213.0
+offset_top = -76.0
+grow_horizontal = 0
+grow_vertical = 0
+script = ExtResource("3_ygli3")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/SaveLoad"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/SaveLoad/MarginContainer"]
+layout_mode = 2
+
+[node name="room_type container" type="HBoxContainer" parent="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="TileButton" parent="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container" instance=ExtResource("4_y8eir")]
+layout_mode = 2
+
+[node name="TileButton2" parent="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container" instance=ExtResource("4_y8eir")]
+layout_mode = 2
+
+[node name="Tile Tex" parent="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container/TileButton2/Button" index="0"]
+texture = SubResource("AtlasTexture_rg23l")
+
+[node name="TileButton3" parent="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container" instance=ExtResource("4_y8eir")]
+layout_mode = 2
+
+[node name="Tile Tex" parent="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container/TileButton3/Button" index="0"]
+texture = SubResource("AtlasTexture_1j1tn")
+
+[node name="TileButton4" parent="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container" instance=ExtResource("4_y8eir")]
+layout_mode = 2
+
+[node name="Tile Tex" parent="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container/TileButton4/Button" index="0"]
+texture = SubResource("AtlasTexture_gmt88")
+
+[node name="TextEdit" type="TextEdit" parent="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+placeholder_text = "Filename"
+
+[node name="Save Button" type="Button" parent="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Save"
+
+[node name="Load Button" type="Button" parent="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Load"
+
+[node name="FileDialog" type="FileDialog" parent="CanvasLayer"]
+title = "Open a File"
+position = Vector2i(450, 200)
+size = Vector2i(392, 300)
+ok_button_text = "Open"
+file_mode = 0
+access = 1
+
+[node name="OverwriteConfirm" type="ConfirmationDialog" parent="CanvasLayer"]
+title = "Confirm"
+position = Vector2i(500, 250)
+unresizable = true
+dialog_text = "Overwrite file?"
+
+[node name="saved label" type="Label" parent="CanvasLayer"]
+visible = false
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -174.0
+offset_top = -239.0
+offset_right = -92.0
+offset_bottom = -213.0
+grow_horizontal = 0
+grow_vertical = 0
+theme = SubResource("Theme_wgqjx")
+text = "File Saved!"
+
+[node name="label timer" type="Timer" parent="CanvasLayer"]
+
+[connection signal="pressed" from="CanvasLayer/Tile Selector/PanelContainer/MarginContainer/Clear Button" to="." method="_on_clear_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/Save Button" to="CanvasLayer/SaveLoad" method="_on_save_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/Load Button" to="CanvasLayer/SaveLoad" method="_on_load_button_pressed"]
+[connection signal="file_selected" from="CanvasLayer/FileDialog" to="CanvasLayer/SaveLoad" method="_on_file_dialog_file_selected"]
+[connection signal="confirmed" from="CanvasLayer/OverwriteConfirm" to="CanvasLayer/SaveLoad" method="_on_overwrite_confirm_confirmed"]
+[connection signal="timeout" from="CanvasLayer/label timer" to="CanvasLayer/SaveLoad" method="_on_label_timer_timeout"]
+
+[editable path="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container/TileButton2"]
+[editable path="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container/TileButton3"]
+[editable path="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container/TileButton4"]

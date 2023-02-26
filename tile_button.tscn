@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://du0g1ewfj5m5u"]
+
+[ext_resource type="Texture2D" uid="uid://bq4j0y0rkbuad" path="res://template builder/button tex.png" id="1_j5bnq"]
+[ext_resource type="Script" path="res://tile_button.gd" id="1_sc633"]
+[ext_resource type="Texture2D" uid="uid://jbjwpm2urkm8" path="res://template builder/template tiles.png" id="2_gt6qt"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q6o8d"]
+atlas = ExtResource("2_gt6qt")
+region = Rect2(0, 0, 16, 16)
+
+[node name="TileButton" type="Control"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_sc633")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+icon = ExtResource("1_j5bnq")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Tile Tex" type="TextureRect" parent="Button"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("AtlasTexture_q6o8d")
