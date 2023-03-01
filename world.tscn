@@ -1,19 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://c084oplwwetvj"]
+[gd_scene load_steps=5 format=3 uid="uid://c084oplwwetvj"]
 
 [ext_resource type="Script" path="res://World.gd" id="1_3oaj0"]
-[ext_resource type="Texture2D" uid="uid://bfw74leo88eii" path="res://Tiles.png" id="2_8jpgw"]
 [ext_resource type="Script" path="res://Rooms.gd" id="2_stls0"]
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8a1fy"]
-texture = ExtResource("2_8jpgw")
-0:0/0 = 0
-1:0/0 = 0
-2:0/0 = 0
-3:0/0 = 0
-4:0/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_c15g5"]
-sources/0 = SubResource("TileSetAtlasSource_8a1fy")
+[ext_resource type="TileSet" uid="uid://b2jx4c5g7wkrv" path="res://world_tiles.tres" id="3_8su66"]
+[ext_resource type="Script" path="res://UnitManager.gd" id="4_8afbx"]
 
 [node name="World" type="Node2D" groups=["World"]]
 script = ExtResource("1_3oaj0")
@@ -23,7 +13,7 @@ script = ExtResource("2_stls0")
 
 [node name="TileMap" type="TileMap" parent="."]
 position = Vector2(-14, -761)
-tile_set = SubResource("TileSet_c15g5")
+tile_set = ExtResource("3_8su66")
 format = 2
 layer_0/name = "Playground"
 layer_1/name = "Debug"
@@ -36,3 +26,7 @@ layer_1/tile_data = PackedInt32Array()
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(563, -378)
+zoom = Vector2(0.8, 0.8)
+
+[node name="Units" type="Node2D" parent="."]
+script = ExtResource("4_8afbx")

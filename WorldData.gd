@@ -7,3 +7,7 @@ var room_size := Vector2i(10, 10)
 var tile_size := Vector2i(16, 16)
 
 var room_grid := {}
+
+var spawned_units := {
+	# unit id, unit obj
+}

@@ -59,6 +59,7 @@ func _ready():
 		d2.make_dir("1")
 		d2.make_dir("2")
 		d2.make_dir("3")
+		d2.make_dir("4")
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://b0lka6j85jax1"]
+[gd_scene load_steps=12 format=3 uid="uid://b0lka6j85jax1"]
 
 [ext_resource type="Texture2D" uid="uid://jbjwpm2urkm8" path="res://template builder/template tiles.png" id="1_5tp58"]
 [ext_resource type="Script" path="res://template builder/template_builder.gd" id="1_edn7h"]
@@ -29,6 +29,10 @@ region = Rect2(0, 32, 16, 16)
 [sub_resource type="AtlasTexture" id="AtlasTexture_gmt88"]
 atlas = ExtResource("1_5tp58")
 region = Rect2(0, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uyrtn"]
+atlas = ExtResource("1_5tp58")
+region = Rect2(0, 64, 16, 16)
 
 [sub_resource type="Theme" id="Theme_wgqjx"]
 Label/colors/font_color = Color(0.823529, 0.819608, 0.0196078, 1)
@@ -137,6 +141,12 @@ layout_mode = 2
 [node name="Tile Tex" parent="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container/TileButton4/Button" index="0"]
 texture = SubResource("AtlasTexture_gmt88")
 
+[node name="TileButton5" parent="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container" instance=ExtResource("4_y8eir")]
+layout_mode = 2
+
+[node name="Tile Tex" parent="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container/TileButton5/Button" index="0"]
+texture = SubResource("AtlasTexture_uyrtn")
+
 [node name="TextEdit" type="TextEdit" parent="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 35)
 layout_mode = 2
@@ -192,3 +202,4 @@ text = "File Saved!"
 [editable path="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container/TileButton2"]
 [editable path="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container/TileButton3"]
 [editable path="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container/TileButton4"]
+[editable path="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container/TileButton5"]

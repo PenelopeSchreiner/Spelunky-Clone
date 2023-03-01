@@ -15,28 +15,30 @@ func get_random_template_of_type(type) -> RoomTemplate:
 
 func fill_room_with_template(template : RoomTemplate) -> void:
 	
-	for x in range(world.data.room_size.x):
-		for y in range(world.data.room_size.y):
-			var pos = Vector2i(x, y)
-			
-			#print(template.data[pos])
-			data.grid[pos] = template.data[pos]
+	#print(template.type)
+	#print(template.data)
+	
+	if template.type >= 0:
+		for x in range(world.data.room_size.x):
+			for y in range(world.data.room_size.y):
+				var pos = Vector2i(x, y)
+				
+				data.grid[pos] = template.data[pos]
 
 # Called when the node enters the scene tree for the first time.
-func generate(_gridPos : Vector2i, _roomType : int):
+func generate(_gridPos : Vector2i, _roomType : int, is_start : bool = false):
 	
-	world = get_tree().get_nodes_in_group("World")[0]
-	#if world.data.room_grid.has(_gridPos) == true:
-	#	return
+	if world == null:
+		world = get_tree().get_nodes_in_group("World")[0]
 	
 	world.data.room_grid[_gridPos] = self
 	data.size = world.data.room_size
 	data.grid_pos = _gridPos
 	data.room_type = _roomType
+	data.is_start = is_start
 	
 	if _roomType == 0:
 		# not on path
-		
 		# -- load a random template for a '0' room
 		var template = get_random_template_of_type(0)
 		fill_room_with_template(template)
@@ -46,13 +48,31 @@ func generate(_gridPos : Vector2i, _roomType : int):
 		fill_room_with_template(template)
 	elif _roomType == 2:
 		# left/right/top exits
-		
 		var template = get_random_template_of_type(2)
 		fill_room_with_template(template)
 	elif _roomType == 3:
 		# left/right/bot exits
 		var template = get_random_template_of_type(3)
 		fill_room_with_template(template)
+	elif _roomType == 4:
+		# L/R/T/B exits
+		var template = get_random_template_of_type(4)
+		fill_room_with_template(template)
+	
+	
+	if is_start == true:
+		# set the position of the starting door in the room
+		# prefer near the middle of the room
+		# -- make a template for room sections
+		# -- prefer a placement where the same tiles are kept between the section template and the room template
+		# -- loop through the whole room and check each room tile with the section template tile
+		# -- add up how many tiles are the same in each position
+		# -- place it where the most match up
+		
+		# -- place the start template in a spot where it doesn't block the solution path
+		
+		# -- or have a set of starting room templates
+		print(" ++ in Room.generate, define how the starting room door is positioned, probably starting room templates ++")
 
 func add_side_exit(_dir : Vector2i) -> void:
 	# clear some tiles from center of room to a specific side
@@ -81,8 +101,7 @@ func add_side_exit(_dir : Vector2i) -> void:
 		for x in range(start.x - 1, start.x + 1, 1):
 			for y in range(start.y, -1, -1):
 				data.grid[Vector2i(x, y)] = 0
-	
-	pass
+
 
 func add_level_exit() -> void:
 	# exit room

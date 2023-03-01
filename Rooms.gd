@@ -5,6 +5,7 @@ var room_templates := {
 	1 : [],
 	2 : [],
 	3 : [],
+	4 : []
 }
 
 func get_room_templates_of_type(type) -> Array:
@@ -18,7 +19,7 @@ func initialize():
 	
 	# get all template files for each room type
 	
-	for type in range(4):
+	for type in range(5):
 		var dir = DirAccess.open("user://templates/" + str(type))
 		if dir:
 			dir.list_dir_begin()

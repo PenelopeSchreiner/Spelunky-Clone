@@ -3,6 +3,7 @@ extends Node2D
 
 @onready var room_h = $Rooms
 @onready var map = $TileMap
+@onready var unit_manager = $Units
 
 # -- prefabs
 var room_prefab = preload("res://room.tscn")
@@ -26,17 +27,19 @@ func build_solution_path() -> void:
 	var room_path := []
 	var rolls := []
 	
-	var start_pos := Vector2i(randi_range(0, data.world_size.x - 1), 0)
+	
+	var start_pos := Vector2i(randi_range(0, data.world_size.x - 1), data.world_size.y - 1)
 	var cur_pos := start_pos
 	var last_room_type := 1
+	var upCounter := 0
 	
 	var dirs = [Vector2i(-1, 0), # left
 				Vector2i(1, 0),  # right
-				Vector2i(0, 1), # up
-				Vector2i(0, -1)] # down
+				Vector2i(0, -1), # up
+				Vector2i(0, 1)] # down
 	
 	# generate start room
-	spawn_room(start_pos, 1)
+	spawn_room(start_pos, 1, true)
 	room_path.append(start_pos)
 	
 	while true:
@@ -53,7 +56,6 @@ func build_solution_path() -> void:
 		var next_room : Vector2i	# where the next room to spawn is
 		var next_room_type := 1		# what kind of room it is
 		var is_going_up := false
-		var invert_left_right := false
 		
 		rolls.append(num)
 		
@@ -63,52 +65,80 @@ func build_solution_path() -> void:
 			
 			# -- if going out of bounds, instead go up
 			if cur_pos.x + dirs[0].x < 0:
-				next_room = cur_pos + dirs[2]
-				next_room_type = 2
+				continue
+				#next_room = cur_pos + dirs[2]
+				#next_room_type = 3
 				
-				is_going_up = true
+				#is_going_up = true
 			else:
+				upCounter = 0
+				
 				next_room = cur_pos + dirs[0]
-				next_room_type = 1
+				next_room_type = randi_range(1, 4)
 		elif num < 5:
 			# -- going right
 			#print("-right")
 			
 			if cur_pos.x + dirs[1].x > data.world_size.x - 1:
-				next_room = cur_pos + dirs[2]
-				next_room_type = 2
+				continue
+				#next_room = cur_pos + dirs[2]
+				#next_room_type = 3
 				
-				is_going_up = true
+				#is_going_up = true
 			else:
+				upCounter = 0
+				
 				next_room = cur_pos + dirs[1]
-				next_room_type = 1
+				next_room_type = randi_range(1, 4)
 		else:
 			# -- going up
 			#print("-up")
+			upCounter += 1
+			#print(upCounter)
+			
+			#print(" -- cur_pos: " + str(cur_pos))
 			
 			is_going_up = true
 		
 		if is_going_up == true:
-			if cur_pos.y >= data.world_size.y - 1:
+			if cur_pos.y == 0:
 				# can't go up, so this is the level exit
 				data.room_grid[cur_pos].add_level_exit()
 				break
 			else:
-				next_room = cur_pos + dirs[2]
-				next_room_type = 3
+				# - move up a floor
 				
-				data.room_grid[cur_pos].add_side_exit(Vector2i(0, 1))
+				if upCounter >= 2:
+					# change the previous room to a type 4
+					var old_room_type : int = 4
+					data.room_grid[cur_pos].generate(cur_pos, old_room_type)
+					#print(" -- prev room: " + str(cur_pos))
+					#print(" -- new type for prev room: " + str(old_room_type))
+				else:
+					# change the previous room to a type 3 or 4
+					var arr := [2, 4]
+					var old_room_type : int = arr[randi_range(0, 1)]
+					data.room_grid[cur_pos].generate(cur_pos, old_room_type)
+					#print(" -- prev room: " + str(cur_pos))
+					#print(" -- new type for prev room: " + str(old_room_type))
+				
+				next_room = cur_pos + dirs[2]
+				next_room_type = randi_range(3, 4)
+				#print(" -- next up room pos: " + str(next_room))
+				#print("next room type for an up room: " + str(next_room_type))
+					
+					#data.room_grid[cur_pos].add_side_exit(Vector2i(0, 1))
 		
+		room_path.append(next_room)
 		
 		# - spawn next room
 		if data.room_grid.has(next_room) == false:
 			spawn_room(next_room, next_room_type)
-			room_path.append(next_room)
 			
-			if last_room_type == 2: # or 3?
-				# last room was had a top exit
-				# add bot exit to this room
-				data.room_grid[next_room].add_side_exit(Vector2i(0, -1))
+#			if last_room_type == 2: # or 3?
+#				# last room was had a top exit
+#				# add bot exit to this room
+#				data.room_grid[next_room].add_side_exit(Vector2i(0, -1))
 		
 		
 		# - update cur pos
@@ -128,7 +158,7 @@ func build_solution_path() -> void:
 func fill_rest_of_map() -> void:
 	# fill the rest of the map with 0 rooms
 	for x in data.world_size.x:
-		for y in data.world_size.y:
+		for y in range(data.world_size.y - 1, -1, -1):
 			if data.room_grid.has(Vector2i(x, y)) == false:
 				spawn_room(Vector2i(x, y), 0)
 
@@ -160,15 +190,20 @@ func _ready():
 	room_h.initialize()
 	
 	# -- init
-	
-	
 	build_solution_path()
 	fill_rest_of_map()
 	make_outer_wall()
+	# --
 	
+	# -- update display
 	for i in data.room_grid:
 		update_tiles_in_room(data.room_grid[i])
 	
+	# -- spawn test player
+	var starting_room = get_starting_room()
+	if starting_room != null:
+		# get the pos of the startind door in the starting room
+		unit_manager.spawn_player(map.map_to_local(starting_room.data.grid_pos))
 
 
 func _draw():
@@ -186,12 +221,20 @@ func _draw():
 						draw_line(Vector2i(x, -y) * data.room_size * 16, Vector2i(n.x, -n.y) * data.room_size * 16, Color(1, 0, 0, 1), 1.0)
 
 
-func spawn_room(_pos : Vector2i, _roomType : int) -> void:
+func spawn_room(_pos : Vector2i, _roomType : int, is_start : bool = false) -> void:
 	var r = room_prefab.instantiate()
 	room_h.add_child(r)
-	r.generate(_pos, _roomType)
+	r.generate(_pos, _roomType, is_start)
 	
 	#print("spawning room at: " + str(_pos))
+
+func get_starting_room():
+	for x in data.world_size.x:
+		for y in data.world_size.y:
+			if data.room_grid[Vector2i(x, y)].data.is_start == true:
+				return data.room_grid[Vector2i(x, y)]
+	
+	return null
 
 
 func update_tiles_in_room(_room):
