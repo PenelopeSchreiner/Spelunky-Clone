@@ -26,6 +26,9 @@ func save_file(filename):
 	file.store_var(template_builder.tiles_dict)
 	file.store_var(template_builder.room_type)
 	
+	for i in template_builder.tiles_dict:
+		print(template_builder.tiles_dict[i])
+	
 	saved_label.show()
 	label_timer.start()
 

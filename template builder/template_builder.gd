@@ -74,7 +74,7 @@ func initialize():
 	
 	for x in room_size.x:
 		for y in room_size.y:
-			map.set_cell(0, Vector2i(x, y), 0, Vector2i(0, 0))
+			map.set_cell(0, Vector2i(x, y), 0, Vector2i(tiles_dict[Vector2i(x, y)], 0))
 	
 	var ind := 0
 	for i in room_type_container.get_children():
@@ -139,6 +139,9 @@ func clear_map() -> void:
 	for x in room_size.x:
 		for y in room_size.y:
 			map.set_cell(0, Vector2i(x, y), 0, Vector2i(0, 0))
+			
+			# reset tiles_dict
+			tiles_dict[Vector2i(x, y)] = 0
 
 func get_tile_under_cursor() -> Vector2i:
 	var mouse_pos = get_global_mouse_position()

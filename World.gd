@@ -39,7 +39,7 @@ func build_solution_path() -> void:
 				Vector2i(0, 1)] # down
 	
 	# generate start room
-	spawn_room(start_pos, 1, true)
+	spawn_room(start_pos, randi_range(1, 4), true)
 	room_path.append(start_pos)
 	
 	while true:
@@ -111,14 +111,14 @@ func build_solution_path() -> void:
 				if upCounter >= 2:
 					# change the previous room to a type 4
 					var old_room_type : int = 4
-					data.room_grid[cur_pos].generate(cur_pos, old_room_type)
+					data.room_grid[cur_pos].generate(cur_pos, old_room_type, false)
 					#print(" -- prev room: " + str(cur_pos))
 					#print(" -- new type for prev room: " + str(old_room_type))
 				else:
 					# change the previous room to a type 3 or 4
 					var arr := [2, 4]
 					var old_room_type : int = arr[randi_range(0, 1)]
-					data.room_grid[cur_pos].generate(cur_pos, old_room_type)
+					data.room_grid[cur_pos].generate(cur_pos, old_room_type, false)
 					#print(" -- prev room: " + str(cur_pos))
 					#print(" -- new type for prev room: " + str(old_room_type))
 				
@@ -133,7 +133,7 @@ func build_solution_path() -> void:
 		
 		# - spawn next room
 		if data.room_grid.has(next_room) == false:
-			spawn_room(next_room, next_room_type)
+			spawn_room(next_room, next_room_type, false)
 			
 #			if last_room_type == 2: # or 3?
 #				# last room was had a top exit
@@ -160,7 +160,7 @@ func fill_rest_of_map() -> void:
 	for x in data.world_size.x:
 		for y in range(data.world_size.y - 1, -1, -1):
 			if data.room_grid.has(Vector2i(x, y)) == false:
-				spawn_room(Vector2i(x, y), 0)
+				spawn_room(Vector2i(x, y), 0, false)
 
 
 func make_outer_wall() -> void:
@@ -190,9 +190,7 @@ func _ready():
 	room_h.initialize()
 	
 	# -- init
-	build_solution_path()
-	fill_rest_of_map()
-	make_outer_wall()
+	initialize()
 	# --
 	
 	# -- update display
@@ -201,9 +199,25 @@ func _ready():
 	
 	# -- spawn test player
 	var starting_room = get_starting_room()
+	
+	while starting_room == null:
+		initialize()
+		
+		starting_room = get_starting_room()
+	
 	if starting_room != null:
+		
+		# -- update rooms individually
+		for i in data.room_grid:
+			update_tiles_in_room(data.room_grid[i])
+		
+		# -- update terrain sets
+		update_terrain_set_tiles(1)
+		
 		# get the pos of the startind door in the starting room
-		unit_manager.spawn_player(map.map_to_local(starting_room.data.grid_pos))
+		unit_manager.spawn_player(starting_room.data.grid_pos * data.tile_size * data.room_size + starting_room.data.start_door_pos * data.tile_size) # room position + starting door position in room
+		#unit_manager.spawn_player(Vector2(0, 0))
+		
 
 
 func _draw():
@@ -221,20 +235,55 @@ func _draw():
 						draw_line(Vector2i(x, -y) * data.room_size * 16, Vector2i(n.x, -n.y) * data.room_size * 16, Color(1, 0, 0, 1), 1.0)
 
 
-func spawn_room(_pos : Vector2i, _roomType : int, is_start : bool = false) -> void:
+func initialize() -> void:
+	
+	# clear tiles
+	clear_all_tiles()
+	
+	# clear room grid and objs
+	for i in data.room_grid:
+		data.room_grid[i].queue_free()
+	
+	data.room_grid.clear()
+	
+	build_solution_path()
+	fill_rest_of_map()
+	make_outer_wall()
+
+func spawn_room(_pos : Vector2i, _roomType : int, is_start : bool) -> void:
 	var r = room_prefab.instantiate()
 	room_h.add_child(r)
 	r.generate(_pos, _roomType, is_start)
 	
+	#print(_pos)
+	#print(is_start)
+	
 	#print("spawning room at: " + str(_pos))
 
 func get_starting_room():
+	var dict := {}
+	
 	for x in data.world_size.x:
 		for y in data.world_size.y:
-			if data.room_grid[Vector2i(x, y)].data.is_start == true:
-				return data.room_grid[Vector2i(x, y)]
+			
+			#print(Vector2i(x, y))
+			#print(data.room_grid[Vector2i(x, y)].data.is_start)
+			dict[Vector2i(x, y)] = data.room_grid[Vector2i(x, y)].data.is_start
 	
+	#print(dict)
+	
+	for i in dict:
+		if dict[i] == true:
+			return data.room_grid[i]
+	
+	print("-- NO START ROOM FOUND --")
 	return null
+
+
+func clear_all_tiles() -> void:
+	for x in data.world_size.x * data.room_size.x:
+		for y in data.world_size.y * data.room_size.y:
+			map.set_cell(0, Vector2i(x, y))
 
 
 func update_tiles_in_room(_room):
@@ -244,7 +293,39 @@ func update_tiles_in_room(_room):
 		# get tile pos
 		var tile_pos = _room.data.grid_pos * data.room_size + pos
 		
-		map.set_cell(0, tile_pos, 0, Vector2i(_room.data.grid[pos], 0))
+		var temp_tile_id = _room.data.grid[pos]
+		#var arr := []
+		
+		if temp_tile_id == 0:
+			map.set_cell(0, tile_pos, 0, Vector2i(0, 0))
+		elif temp_tile_id == 4:
+			# backwall
+			#map.set_cell(0, tile_pos, 0, Vector2i(0, 0))
+			# -- door
+			map.set_cell(1, tile_pos, 0, Vector2i(0, 1))
+		else:
+			#arr.append(tile_pos)
+			
+			map.set_cell(0, tile_pos, 1, Vector2i(3, 3))
+		
+		#if arr.size() > 0:
+			#map.set_cells_terrain_connect(0, arr, 0, 0)
+			#map.set_cells_terrain_path(0, arr, 0, 0)
+
+
+func update_terrain_set_tiles(terrain_source_id : int):
+	
+	var arr := []
+	
+	for y in data.world_size.y * data.room_size.y:
+		for x in data.world_size.x * data.room_size.x:
+			var cell := Vector2i(x, y)
+			
+			# -- make sure that it's only checking tiles with the terrain_source_id
+			if map.get_cell_source_id(0, cell) == terrain_source_id:
+				arr.append(cell)
+	
+	map.set_cells_terrain_connect(0, arr, 0, 0)
 
 
 func set_debug_grid_tiles():
@@ -252,7 +333,7 @@ func set_debug_grid_tiles():
 	
 	for x in range(data.world_size.x):
 		for y in range(data.world_size.y):
-			map.set_cell(1, Vector2i(x * step, y * step), 0, Vector2i(2, 0))
+			map.set_cell(2, Vector2i(x * step, y * step), 0, Vector2i(2, 0))
 
 
 func get_neighboring_rooms(room_pos : Vector2i) -> Array:

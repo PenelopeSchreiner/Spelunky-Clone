@@ -8,10 +8,11 @@ var data := RoomData.new()
 func get_random_template_of_type(type) -> RoomTemplate:
 	if world.room_h.room_templates.has(type) == true:
 		var templates : Array = world.room_h.get_room_templates_of_type(type)
-		var ran = randi_range(0, templates.size() - 1)
-		return templates[ran]
-	else:
-		return RoomTemplate.new()
+		if templates.size() > 0:
+			var ran = randi_range(0, templates.size() - 1)
+			return templates[ran]
+	
+	return RoomTemplate.new()
 
 func fill_room_with_template(template : RoomTemplate) -> void:
 	
@@ -26,16 +27,16 @@ func fill_room_with_template(template : RoomTemplate) -> void:
 				data.grid[pos] = template.data[pos]
 
 # Called when the node enters the scene tree for the first time.
-func generate(_gridPos : Vector2i, _roomType : int, is_start : bool = false):
+func generate(_gridPos : Vector2i, _roomType : int, is_start : bool):
 	
 	if world == null:
 		world = get_tree().get_nodes_in_group("World")[0]
 	
-	world.data.room_grid[_gridPos] = self
 	data.size = world.data.room_size
 	data.grid_pos = _gridPos
 	data.room_type = _roomType
 	data.is_start = is_start
+	#print(data.is_start)
 	
 	if _roomType == 0:
 		# not on path
@@ -70,9 +71,15 @@ func generate(_gridPos : Vector2i, _roomType : int, is_start : bool = false):
 		# -- place it where the most match up
 		
 		# -- place the start template in a spot where it doesn't block the solution path
-		
+		data.start_door_pos = Vector2i(5, 5)
 		# -- or have a set of starting room templates
+		print("start room pos: " + str(_gridPos))
+		print("is start: " + str(is_start))
 		print(" ++ in Room.generate, define how the starting room door is positioned, probably starting room templates ++")
+	
+	# -- add to room grid
+	world.data.room_grid[_gridPos] = self
+
 
 func add_side_exit(_dir : Vector2i) -> void:
 	# clear some tiles from center of room to a specific side

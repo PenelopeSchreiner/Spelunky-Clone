@@ -21,4 +21,5 @@ func spawn_player(_pos) -> void:
 	var id = spawned_players.size()
 	spawned_players[id] = p
 	
-	p.position = _pos
+	p.position = _pos + Vector2i(16, -16)
+	print(_pos)

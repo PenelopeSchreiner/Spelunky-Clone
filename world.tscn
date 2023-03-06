@@ -12,20 +12,28 @@ script = ExtResource("1_3oaj0")
 script = ExtResource("2_stls0")
 
 [node name="TileMap" type="TileMap" parent="."]
-position = Vector2(-14, -761)
+scale = Vector2(0.946765, 1)
 tile_set = ExtResource("3_8su66")
 format = 2
 layer_0/name = "Playground"
-layer_1/name = "Debug"
+layer_1/name = "Building"
 layer_1/enabled = true
-layer_1/modulate = Color(0, 0, 0, 1)
+layer_1/modulate = Color(1, 1, 1, 1)
 layer_1/y_sort_enabled = false
 layer_1/y_sort_origin = 0
 layer_1/z_index = 0
 layer_1/tile_data = PackedInt32Array()
+layer_2/name = "Debug"
+layer_2/enabled = true
+layer_2/modulate = Color(0, 0, 0, 1)
+layer_2/y_sort_enabled = false
+layer_2/y_sort_origin = 0
+layer_2/z_index = 0
+layer_2/tile_data = PackedInt32Array()
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(563, -378)
+position = Vector2(561, 396)
+enabled = false
 zoom = Vector2(0.8, 0.8)
 
 [node name="Units" type="Node2D" parent="."]
