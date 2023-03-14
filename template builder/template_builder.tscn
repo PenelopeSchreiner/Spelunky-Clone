@@ -1,38 +1,44 @@
 [gd_scene load_steps=12 format=3 uid="uid://b0lka6j85jax1"]
 
-[ext_resource type="Texture2D" uid="uid://jbjwpm2urkm8" path="res://template builder/template tiles.png" id="1_5tp58"]
 [ext_resource type="Script" path="res://template builder/template_builder.gd" id="1_edn7h"]
+[ext_resource type="Texture2D" uid="uid://d2vbhq3xbuvm4" path="res://template builder/Template Tiles.png" id="2_5iokp"]
 [ext_resource type="Script" path="res://template builder/SaveLoad.gd" id="3_ygli3"]
 [ext_resource type="PackedScene" uid="uid://du0g1ewfj5m5u" path="res://tile_button.tscn" id="4_y8eir"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_tefpn"]
-texture = ExtResource("1_5tp58")
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bhna0"]
+texture = ExtResource("2_5iokp")
+texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 1:0/0 = 0
-0:1/0 = 0
-0:2/0 = 0
-0:3/0 = 0
-0:4/0 = 0
-7:7/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+0:7/0 = 0
+1:7/0 = 0
+2:7/0 = 0
+3:7/0 = 0
+4:7/0 = 0
 
-[sub_resource type="TileSet" id="TileSet_bwhfq"]
-sources/0 = SubResource("TileSetAtlasSource_tefpn")
+[sub_resource type="TileSet" id="TileSet_rofqs"]
+tile_size = Vector2i(32, 32)
+sources/0 = SubResource("TileSetAtlasSource_bhna0")
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rg23l"]
-atlas = ExtResource("1_5tp58")
-region = Rect2(0, 16, 16, 16)
+atlas = ExtResource("2_5iokp")
+region = Rect2(32, 224, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1j1tn"]
-atlas = ExtResource("1_5tp58")
-region = Rect2(0, 32, 16, 16)
+atlas = ExtResource("2_5iokp")
+region = Rect2(64, 224, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gmt88"]
-atlas = ExtResource("1_5tp58")
-region = Rect2(0, 48, 16, 16)
+atlas = ExtResource("2_5iokp")
+region = Rect2(96, 224, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_uyrtn"]
-atlas = ExtResource("1_5tp58")
-region = Rect2(0, 64, 16, 16)
+atlas = ExtResource("2_5iokp")
+region = Rect2(128, 224, 32, 32)
 
 [sub_resource type="Theme" id="Theme_wgqjx"]
 Label/colors/font_color = Color(0.823529, 0.819608, 0.0196078, 1)
@@ -41,19 +47,28 @@ Label/colors/font_color = Color(0.823529, 0.819608, 0.0196078, 1)
 script = ExtResource("1_edn7h")
 
 [node name="TileMap" type="TileMap" parent="."]
-tile_set = SubResource("TileSet_bwhfq")
+tile_set = SubResource("TileSet_rofqs")
 format = 2
-layer_1/name = "selected"
+layer_0/name = "Background"
+layer_0/tile_data = PackedInt32Array(1, 1, 0, 65537, 1, 0, 65538, 1, 0, 3, 1, 0, 131073, 1, 0, 131074, 1, 0, 196609, 1, 0, 262145, 1, 0)
+layer_1/name = "Main"
 layer_1/enabled = true
 layer_1/modulate = Color(1, 1, 1, 1)
 layer_1/y_sort_enabled = false
 layer_1/y_sort_origin = 0
 layer_1/z_index = 0
 layer_1/tile_data = PackedInt32Array()
+layer_2/name = "selected"
+layer_2/enabled = true
+layer_2/modulate = Color(1, 1, 1, 1)
+layer_2/y_sort_enabled = false
+layer_2/y_sort_origin = 0
+layer_2/z_index = 0
+layer_2/tile_data = PackedInt32Array()
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(81, 74)
-zoom = Vector2(3, 3)
+position = Vector2(183, 162)
+zoom = Vector2(1.8, 1.8)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -199,6 +214,7 @@ text = "File Saved!"
 [connection signal="confirmed" from="CanvasLayer/OverwriteConfirm" to="CanvasLayer/SaveLoad" method="_on_overwrite_confirm_confirmed"]
 [connection signal="timeout" from="CanvasLayer/label timer" to="CanvasLayer/SaveLoad" method="_on_label_timer_timeout"]
 
+[editable path="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container/TileButton"]
 [editable path="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container/TileButton2"]
 [editable path="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container/TileButton3"]
 [editable path="CanvasLayer/SaveLoad/MarginContainer/VBoxContainer/room_type container/TileButton4"]

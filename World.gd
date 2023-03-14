@@ -246,9 +246,12 @@ func initialize() -> void:
 	
 	data.room_grid.clear()
 	
+	fill_backwall()
+	
 	build_solution_path()
 	fill_rest_of_map()
 	make_outer_wall()
+
 
 func spawn_room(_pos : Vector2i, _roomType : int, is_start : bool) -> void:
 	var r = room_prefab.instantiate()
@@ -284,6 +287,13 @@ func clear_all_tiles() -> void:
 	for x in data.world_size.x * data.room_size.x:
 		for y in data.world_size.y * data.room_size.y:
 			map.set_cell(0, Vector2i(x, y))
+			map.set_cell(1, Vector2i(x, y))
+
+
+func fill_backwall() -> void:
+	for x in data.world_size.x * data.room_size.x:
+		for y in data.world_size.y * data.room_size.y:
+			map.set_cell(0, Vector2i(x, y), 1, Vector2i(0, 4))
 
 
 func update_tiles_in_room(_room):
@@ -297,16 +307,36 @@ func update_tiles_in_room(_room):
 		#var arr := []
 		
 		if temp_tile_id == 0:
-			map.set_cell(0, tile_pos, 0, Vector2i(0, 0))
-		elif temp_tile_id == 4:
-			# backwall
-			#map.set_cell(0, tile_pos, 0, Vector2i(0, 0))
-			# -- door
-			map.set_cell(1, tile_pos, 0, Vector2i(0, 1))
-		else:
-			#arr.append(tile_pos)
+			# -- backwall
+			map.set_cell(0, tile_pos, 1, Vector2i(0, 4))
 			
-			map.set_cell(0, tile_pos, 1, Vector2i(3, 3))
+			# !!! change the template builder to be blank with a grid
+			# and allows using id 0 for a different block
+			
+		elif temp_tile_id == 1:
+			# -- walls
+			map.set_cell(1, tile_pos, 1, Vector2i(3, 3))
+		elif temp_tile_id == 2:
+			# -- backwall
+			#map.set_cell(0, tile_pos, 1, Vector2i(0, 4))
+			# -- wood platform
+			map.set_cell(1, tile_pos, 2, Vector2i(2, 0))
+		elif temp_tile_id == 3:
+			# -- backwall
+			#map.set_cell(0, tile_pos, 1, Vector2i(0, 4))
+			# -- ladder top
+			# platform
+			map.set_cell(1, tile_pos, 2, Vector2i(2, 0))
+			# ladder
+			map.set_cell(2, tile_pos, 2, Vector2i(1, 0))
+		elif temp_tile_id == 4:
+			# -- backwall
+			#map.set_cell(0, tile_pos, 1, Vector2i(0, 4))
+			# -- door
+			map.set_cell(1, tile_pos, 2, Vector2i(0, 0))
+		elif temp_tile_id == 5:
+			# -- ladder
+			map.set_cell(2, tile_pos, 2, Vector2i(1, 0))
 		
 		#if arr.size() > 0:
 			#map.set_cells_terrain_connect(0, arr, 0, 0)
@@ -323,7 +353,9 @@ func update_terrain_set_tiles(terrain_source_id : int):
 			
 			# -- make sure that it's only checking tiles with the terrain_source_id
 			if map.get_cell_source_id(0, cell) == terrain_source_id:
-				arr.append(cell)
+				if map.get_cell_atlas_coords(0, cell) != Vector2i(0, 4):
+					# make sure this isn't a backwall tile
+					arr.append(cell)
 	
 	map.set_cells_terrain_connect(0, arr, 0, 0)
 

@@ -14,7 +14,7 @@ scale = Vector2(0.2, 0.207)
 texture = ExtResource("1_kuenp")
 
 [node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(2, 2)
+zoom = Vector2(1.2, 1.2)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 polygon = PackedVector2Array(0, -9, 12, 3, 10, 17, -10, 17, -12, 3)
